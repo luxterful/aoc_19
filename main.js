@@ -12,6 +12,7 @@ const file_path = `./.input_cache/${day}`;
 
 if (!fs.existsSync(file_path)) {
   console.log(`inputfile for day ${day} not in cache. try to download.`);
+
   if (!fs.existsSync(".aocdownloader.conf")) {
     console.log(`no config file found!`);
     var readline = require("readline-sync");
@@ -21,20 +22,26 @@ if (!fs.existsSync(file_path)) {
       ".aocdownloader.conf",
       JSON.stringify({ session_cookie: session_cookie }),
       "utf-8",
-      function(err) {
+      function (err) {
         if (err) {
           console.log("An error occured while writing JSON Object to File.");
           return console.log(err);
         }
-
-        console.log("JSON file has been saved.");
+        console.log(".aocdownloader.conf file has been saved.");
       }
     );
-    process.exit(1);
   }
+
+  const session_cookie = JSON.parse(fs.readFileSync('file', 'utf8')).session_cookie;
   const url = `https://adventofcode.com/2019/day/${day}/input`;
+
+  axios.get(url, {
+    headers: {
+      Cookie: `session=${session_cookie};`
+    }
+  }).then()
 }
 
-fs.readFile(file_path, { encoding: "utf-8" }, function(err, data) {
+fs.readFile(file_path, { encoding: "utf-8" }, function (err, data) {
   console.log(data);
 });
