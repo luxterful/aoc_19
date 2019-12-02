@@ -1,8 +1,7 @@
 const mass2fuel = mass => Math.floor(mass / 3) - 2;
 
-var fs = require("fs");
-fs.readFile("input", { encoding: "utf-8" }, function(err, data) {
-  const input_arr = data.split(/\r?\n/);
+module.exports.main = function(input) {
+  const input_arr = input.split(/\r?\n/);
   let fuel_amount = 0;
   input_arr.forEach(el => {
     let extra_mass = el;
@@ -15,5 +14,5 @@ fs.readFile("input", { encoding: "utf-8" }, function(err, data) {
       }
     } while (true);
   });
-  console.log(fuel_amount);
-});
+  return fuel_amount;
+};

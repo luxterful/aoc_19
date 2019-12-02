@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 const argv = require("yargs").argv;
 var fs = require("fs");
-var axios = require("axios");
+const configfile = ".aocdownloader.conf";
 
 const day = argv.day;
+const part = argv.part;
+
 if (day < 1 || day > 25) {
   console.log("argument 'day' not in range");
   process.exit(1);
@@ -13,35 +15,45 @@ const file_path = `./.input_cache/${day}`;
 if (!fs.existsSync(file_path)) {
   console.log(`inputfile for day ${day} not in cache. try to download.`);
 
-  if (!fs.existsSync(".aocdownloader.conf")) {
+  if (!fs.existsSync(configfile)) {
     console.log(`no config file found!`);
     var readline = require("readline-sync");
     const session_cookie = readline.question("Please input session cookie: ");
 
-    fs.writeFile(
-      ".aocdownloader.conf",
+    fs.writeFileSync(
+      configfile,
       JSON.stringify({ session_cookie: session_cookie }),
       "utf-8",
-      function (err) {
+      function(err) {
         if (err) {
           console.log("An error occured while writing JSON Object to File.");
           return console.log(err);
         }
-        console.log(".aocdownloader.conf file has been saved.");
+        console.log("config file has been saved.");
       }
     );
   }
 
-  const session_cookie = JSON.parse(fs.readFileSync('file', 'utf8')).session_cookie;
+  const session_cookie = JSON.parse(fs.readFileSync(configfile, "utf8"))
+    .session_cookie;
   const url = `https://adventofcode.com/2019/day/${day}/input`;
 
-  axios.get(url, {
+  var request = require("sync-request");
+  var res = request("GET", url, {
     headers: {
       Cookie: `session=${session_cookie};`
     }
-  }).then()
+  });
+
+  fs.writeFileSync(file_path, res.getBody());
 }
 
-fs.readFile(file_path, { encoding: "utf-8" }, function (err, data) {
-  console.log(data);
-});
+let data = fs.readFileSync(file_path, "utf8");
+
+const script_path = `./day/${day}/${part}.js`;
+if (fs.existsSync(script_path)) {
+  const result = require(script_path).main(data);
+  console.log(result);
+} else {
+  console.log(`script ${script_path} not found`);
+}
