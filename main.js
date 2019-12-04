@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 const argv = require("yargs").argv;
-var fs = require("fs");
+const fs = require("fs");
 const configfile = ".aocdownloader.conf";
-
+const colors = require("colors");
 const day = argv.day;
 const part = argv.part;
 
@@ -53,7 +53,7 @@ let data = fs.readFileSync(file_path, "utf8");
 const script_path = `./day/${day}/${part}.js`;
 if (fs.existsSync(script_path)) {
   const result = require(script_path).main(data);
-  console.log(result);
+  console.log(colors.grey("Returnvalue: ") + colors.yellow(result));
 } else {
   console.log(`script ${script_path} not found`);
 }
