@@ -2,15 +2,20 @@
 const argv = require("yargs").argv;
 const fs = require("fs");
 const configfile = ".aocdownloader.conf";
+const cache_dir = "./.input_cache";
 const colors = require("colors");
 const day = argv.day;
 const part = argv.part;
+
+if (!fs.existsSync(cache_dir)) {
+  fs.mkdirSync(cache_dir);
+}
 
 if (day < 1 || day > 25) {
   console.log("argument 'day' not in range");
   process.exit(1);
 }
-const file_path = `./.input_cache/${day}`;
+const file_path = `${cache_dir}/${day}`;
 
 if (!fs.existsSync(file_path)) {
   console.log(`inputfile for day ${day} not in cache. try to download.`);
@@ -24,7 +29,7 @@ if (!fs.existsSync(file_path)) {
       configfile,
       JSON.stringify({ session_cookie: session_cookie }),
       "utf-8",
-      function(err) {
+      function (err) {
         if (err) {
           console.log("An error occured while writing JSON Object to File.");
           return console.log(err);
