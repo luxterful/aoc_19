@@ -1,9 +1,9 @@
-module.exports.main = function(input) {
+module.exports.main = function (input) {
   input = input.split(",");
 
   input[1] = 12;
   input[2] = 2;
-  console.log(input);
+
   for (let i = 0; ; i += 4) {
     if (input[i] == 1) {
       input[input[i + 3]] = input[input[i + 1]] + input[input[i + 2]];
