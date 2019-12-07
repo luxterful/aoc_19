@@ -3,8 +3,11 @@ const _MD = { POS: "0", IMM: "1" }
 const _IN = 5
 
 module.exports.main = function (input) {
+    let prog = input.trim().split(",").map(x => parseInt(x));
+    return intProgInterpreter(prog);
+}
 
-    let prog = input.trim().split(",").map(x => parseInt(x));;
+const intProgInterpreter = (prog) => {
     let ptr = 0;
     let output = []
 
@@ -99,7 +102,7 @@ module.exports.main = function (input) {
             case _OP.FIN:
                 console.log(`${ptr}: ${[MD3, MD2, MD1, OP]} = FIN`)
 
-                return `result ${prog[0]}, out ${output}`
+                return { result: prog[0], output: output }
             default:
                 console.log(`${ptr}: ${[MD3, MD2, MD1, OP]} = sth went wrong bljad`);
                 console.log(`unknown opcode ${OP}`);
@@ -120,3 +123,5 @@ const val2opArr = (val) => {
     const str = String("0000" + val).slice(-5)
     return [...str.slice(-5, -2).split(""), str.slice(-2)]
 }
+
+module.exports.intProgInterpreter = intProgInterpreter;
